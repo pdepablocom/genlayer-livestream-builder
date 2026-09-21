@@ -259,11 +259,30 @@ function renderPeopleMenu(speakerNode) {
   });
   menu.replaceChildren(tags, ...(options.length ? options : [el('p', 'people-empty', { text: 'Nobody by that name yet.' })]));
   menu.hidden = false;
-  menu.scrollIntoView({ block: 'nearest' });
+  placePeopleMenu(input, menu);
   input.setAttribute('aria-expanded', 'true');
+  // The panel holds still while the menu is open; the menu scrolls on its own.
+  form.style.overflowY = 'hidden';
+}
+
+// Below the field when there is room, otherwise above it. Never taller than the room it has.
+function placePeopleMenu(input, menu) {
+  const field = input.getBoundingClientRect();
+  const panel = form.getBoundingClientRect();
+  const below = panel.bottom - field.bottom - 12;
+  const above = field.top - panel.top - 12;
+  const openBelow = below >= 240 || below >= above;
+  Object.assign(menu.style, {
+    left: field.left + 'px',
+    width: field.width + 'px',
+    maxHeight: Math.min(380, openBelow ? below : above) + 'px',
+    top: openBelow ? field.bottom + 4 + 'px' : 'auto',
+    bottom: openBelow ? 'auto' : window.innerHeight - field.top + 4 + 'px',
+  });
 }
 
 function closePeopleMenu(speakerNode) {
+  form.style.overflowY = '';
   speakerNode.querySelector('.people-menu').hidden = true;
   speakerNode.querySelector('[data-key=name]').setAttribute('aria-expanded', 'false');
 }

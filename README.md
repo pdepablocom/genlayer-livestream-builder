@@ -12,7 +12,7 @@ Open `index.html` (double-click works) or the hosted URL.
 
 1. **What are you making**: pick one. Each choice has its own design and remembers what you last typed into it.
    - **GenLayer AMA**: 1 to 6 speakers, the layouts from `GL - Live`.
-   - **GenTalks**: one or two people around a giant "Gen Talks" and the episode as a roman numeral.
+   - **GenTalks**: 1 to 3 people on the right, a giant "Gen Talks" and the episode as a blue roman numeral on the left.
    - **Builders Weekly Call**: numbered agenda (up to six topics, five with hosts) and up to two hosts.
    - **Agent Tank Livestream**: the Agent Tank look, 1 or 2 speakers.
    - **Partnership**: title plus one or two logos.

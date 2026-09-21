@@ -74,6 +74,7 @@ body.is-ready {
 }
 
 .panel-body {
+  scrollbar-gutter: stable;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -386,11 +387,12 @@ input[type="range"] {
 }
 
 .people-menu {
-  position: absolute;
+  /* Fixed, and placed by js/app.js beside the name field: it floats over the panel instead of
+     living inside its scroll area, so opening it never moves anything behind it. */
+  position: fixed;
   z-index: 10;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 6px;
   border-radius: 10px;
   background: #fff;
@@ -398,10 +400,14 @@ input[type="range"] {
 }
 
 .people-tags {
+  position: sticky;
+  top: -6px;
+  z-index: 1;
+  background: #fff;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  padding: 2px 2px 8px;
+  padding: 8px 2px;
 }
 
 .people-tags button {

@@ -17,7 +17,7 @@ window.GL_SHOWS = [
     name: 'GenTalks',
     template: 'gentalks',
     episode: true,
-    defaults: { count: 2, title: 'Gen\nTalks', subtitle: '', episode: '14' },
+    defaults: { count: 2, title: 'Gen\nTalks', subtitle: 'Conversations with the people\nbuilding on GenLayer', episode: '14' },
   },
   {
     id: 'builders-weekly',

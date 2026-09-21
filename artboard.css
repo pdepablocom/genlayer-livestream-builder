@@ -184,20 +184,6 @@
   align-items: flex-start;
 }
 
-.gt-row {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-}
-
-.gt-centre {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 72px;
-}
-
 .gt-lockup {
   display: flex;
   align-items: flex-end;
@@ -217,9 +203,13 @@
   color: var(--blue);
 }
 
-.gt-topic {
-  width: auto;
-  text-align: center;
+.gt-lockup.is-stacked {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gt-head {
+  gap: 64px;
 }
 
 /* Speaker card */
