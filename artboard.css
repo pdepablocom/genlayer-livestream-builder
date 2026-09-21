@@ -82,7 +82,7 @@
   width: 100%;
 }
 
-.ab-episode.is-blue {
+.ab-episode {
   color: var(--blue);
 }
 
@@ -135,7 +135,7 @@
   align-items: flex-start;
 }
 
-/* Announcement, Quote, Agenda */
+/* Announcement, Builders Weekly Call, GenTalks */
 
 .ab-logotype.is-flush {
   margin-bottom: 0;
@@ -153,11 +153,6 @@
   width: 100%;
 }
 
-.ab-quote {
-  line-height: 1;
-  white-space: normal;
-}
-
 .ab-agenda {
   position: absolute;
   border-top: 2px solid var(--ink);
@@ -165,7 +160,7 @@
 
 .ab-agenda-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 64px;
   border-bottom: 2px solid #e6e6e6;
 }
@@ -174,6 +169,57 @@
   flex: none;
   width: 136px;
   color: var(--blue);
+}
+
+.bw-host {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bw-host-text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.gt-row {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+}
+
+.gt-centre {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 72px;
+}
+
+.gt-lockup {
+  display: flex;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+
+/* Trimmed to cap height and baseline so the word and the numeral share both edges. */
+.gt-word,
+.gt-numeral {
+  width: auto;
+  white-space: pre;
+  text-box: trim-both cap alphabetic;
+}
+
+.gt-numeral {
+  line-height: 1;
+  color: var(--blue);
+}
+
+.gt-topic {
+  width: auto;
+  text-align: center;
 }
 
 /* Speaker card */

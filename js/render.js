@@ -64,15 +64,13 @@ function toRoman(n) {
   return out;
 }
 
-// Title text, plus the episode numeral for numbered shows ("GenTalks XIV").
+// Title text, plus the blue episode numeral for numbered shows ("Builders Weekly Call XXIII").
 function fillTitle(node, text, state) {
   node.textContent = text;
   const episode = parseInt(state.episode, 10);
   const show = window.GL_SHOWS.find((s) => s.id === state.show);
   if (!show || !show.episode || !(episode > 0 && episode < 4000)) return;
-  const style = state.episodeStyle || 'inline-blue';
-  node.append(style.startsWith('line') ? '\n' : ' ');
-  node.append(el('span', 'ab-episode' + (style.endsWith('blue') ? ' is-blue' : ''), { text: toRoman(episode) }));
+  node.append(' ', el('span', 'ab-episode', { text: toRoman(episode) }));
 }
 
 function renderPill(text, compact) {

@@ -13,7 +13,8 @@ const missingFonts = new Set();
 
 function update(mutate) {
   if (mutate) mutate(state);
-  state.count = Math.min(state.count, GL_TEMPLATES[state.template].maxSpeakers || MAX_SPEAKERS);
+  const limits = GL_TEMPLATES[state.template];
+  state.count = Math.min(Math.max(state.count, limits.minSpeakers ?? 1), limits.maxSpeakers || MAX_SPEAKERS);
   renderArtboard(artboard, state);
   syncPanel();
   clearTimeout(saveTimer);
@@ -33,15 +34,7 @@ function fitPreview() {
 /* Panel */
 
 function buildPanel() {
-  form.show.append(new Option('Custom', 'custom'), ...window.GL_SHOWS.map((show) => new Option(show.name, show.id)));
-  const templateSwitch = document.querySelector('[data-bind=template]');
-  for (const template of Object.values(GL_TEMPLATES)) {
-    const button = document.createElement('button');
-    Object.assign(button, { type: 'button', textContent: template.name });
-    button.setAttribute('role', 'radio');
-    button.dataset.value = template.id;
-    templateSwitch.append(button);
-  }
+  form.show.append(...window.GL_SHOWS.map((show) => new Option(show.name, show.id)));
   const speakerTemplate = document.getElementById('speaker-template');
   for (let i = 0; i < MAX_SPEAKERS; i++) {
     const node = speakerTemplate.content.firstElementChild.cloneNode(true);
@@ -57,17 +50,16 @@ function buildPanel() {
   }
 }
 
-const SHOW_FIELDS = ['title', 'subtitle', 'count', 'episode'];
+const SHOW_FIELDS = ['title', 'subtitle', 'count', 'episode', 'agenda'];
 
 // Remembers the outgoing show's content, then loads the incoming show's last content or its defaults.
 function switchShow(id) {
   update((s) => {
-    if (s.show !== 'custom') s.showMemory[s.show] = Object.fromEntries(SHOW_FIELDS.map((key) => [key, s[key]]));
+    s.showMemory[s.show] = Object.fromEntries(SHOW_FIELDS.map((key) => [key, s[key]]));
     s.show = id;
     const show = window.GL_SHOWS.find((item) => item.id === id);
-    if (!show) return;
     s.template = show.template;
-    Object.assign(s, { episode: '' }, show.defaults, s.showMemory[id]);
+    Object.assign(s, { episode: '', subtitle: '', agenda: '' }, show.defaults, s.showMemory[id]);
   });
   fillPanel();
 }
@@ -75,7 +67,6 @@ function switchShow(id) {
 function fillPanel() {
   form.show.value = state.show;
   form.episode.value = state.episode;
-  form.quote.value = state.quote;
   form.agenda.value = state.agenda;
   form.title.value = state.title;
   form.subtitle.value = state.subtitle;
@@ -97,7 +88,11 @@ function syncPanel() {
   }
   const template = GL_TEMPLATES[state.template];
   const max = template.maxSpeakers || MAX_SPEAKERS;
-  for (const button of document.querySelector('[data-bind=count]').children) button.hidden = Number(button.dataset.value) > max;
+  const min = template.minSpeakers ?? 1;
+  for (const button of document.querySelector('[data-bind=count]').children) {
+    button.hidden = Number(button.dataset.value) > max || Number(button.dataset.value) < min;
+  }
+  document.querySelector('[data-section=speakers] h2').textContent = template.speakerLabel ? template.speakerLabel + 's' : 'Speakers';
   document.getElementById('font-warning').hidden = !missingFonts.has(template.id);
 
   const show = window.GL_SHOWS.find((item) => item.id === state.show);
@@ -147,7 +142,7 @@ function bindPanel() {
   form.addEventListener('input', (e) => {
     const t = e.target;
     if (t.name === 'show') switchShow(t.value);
-    else if (['title', 'subtitle', 'date', 'episode', 'quote', 'agenda'].includes(t.name)) update((s) => (s[t.name] = t.value));
+    else if (['title', 'subtitle', 'date', 'episode', 'agenda'].includes(t.name)) update((s) => (s[t.name] = t.value));
     else if (t.name === 'handle0' || t.name === 'handle1') update((s) => (s.handles[Number(t.name.slice(-1))] = t.value));
     else if (t.dataset.key) update((s) => (s.speakers[t.closest('.speaker').dataset.index][t.dataset.key] = t.value));
     else if (t.type === 'range') update((s) => (s.speakers[t.closest('.speaker').dataset.index].photo.zoom = Number(t.value)));
@@ -431,7 +426,8 @@ async function start() {
   const saved = await store.get('state');
   myPeople = (await store.get('library')) || [];
   if (saved) state = { ...defaultState(), ...saved };
-  if (!GL_TEMPLATES[state.template]) state.template = 'speakers';
+  if (!window.GL_SHOWS.some((show) => show.id === state.show)) state.show = 'ama';
+  state.template = window.GL_SHOWS.find((show) => show.id === state.show).template;
   fillPanel();
 
   // Text fitting measures real glyphs, so the first render waits for the brand fonts.

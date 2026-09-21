@@ -10,8 +10,14 @@ It is a static page. Photos and logos are processed in the browser and never upl
 
 Open `index.html` (double-click works) or the hosted URL.
 
-1. **Show**: pick GenTalks, AMA Agent, Agent Tank Livestream or Builders Weekly Call to fill in the usual template and copy, or stay on Custom. Numbered shows get an episode field that prints as a roman numeral. Each show remembers what you last typed.
-2. **Template**: Speakers (1 to 6), Partnership (one or two logos), Announcement (type only), Quote (one speaker and what they said), Agenda (numbered run-of-show, up to six topics), Agent Tank (1 or 2).
+1. **What are you making**: pick one. Each choice has its own design and remembers what you last typed into it.
+   - **GenLayer AMA**: 1 to 6 speakers, the layouts from `GL - Live`.
+   - **GenTalks**: one or two people around a giant "Gen Talks" and the episode as a roman numeral.
+   - **Builders Weekly Call**: numbered agenda (up to six topics, five with hosts) and up to two hosts.
+   - **Agent Tank Livestream**: the Agent Tank look, 1 or 2 speakers.
+   - **Partnership**: title plus one or two logos.
+   - **Announcement**: one big statement, nothing else.
+2. Type the title, date and the rest. Enter forces a line break in the title.
 3. **Speakers**: start typing a name to pick someone from the list, or filter by tag. Picking fills the name, role, company and photo. For someone new, type the details and add a photo: it turns black and white on upload. Drag the photo in the preview to reframe it, scroll over it to zoom.
 4. **Download PNG** (2880 × 1620) or **1080p**. **Starts-soon intro** previews the animated loop and downloads it as a 12 second, 1920 × 1080 MP4 that loops seamlessly.
 
@@ -29,13 +35,13 @@ Text that doesn't fit steps down a fixed size ladder rather than scaling freely,
 | A template's positions, sizes, type ladders | `js/templates/<template>.js` |
 | Margins and values every template shares | `js/layouts.js` |
 | Fonts, colours, line heights, tracking, pills, themes | `artboard.css` |
-| Shows and their default copy | `js/shows.js` |
+| The picker entries and their default copy | `js/shows.js` |
 | Intro timing and motion | `INTRO` and `INTRO_CUES` in `js/intro.js` |
 | The tool's own interface | `app.css` |
 
 All values are artboard pixels, the same numbers you read in Figma.
 
-**Adding a template:** copy `js/templates/partnership.js`, register it with `registerTemplate({ id, name, theme, sections, render })`, add a `<script>` tag in `index.html`, and put any colours under `.artboard[data-theme="<theme>"]`. Tag elements with `data-intro` (`logo`, `title`, `subtitle`, `portrait`, `caption`, `art`, `date`, `soon`) and the intro animates them with no further work.
+**Adding a design:** copy `js/templates/partnership.js`, register it with `registerTemplate({ id, name, theme, sections, render })`, add a `<script>` tag in `index.html`, add an entry for it in `js/shows.js`, and put any colours under `.artboard[data-theme="<theme>"]`. Tag elements with `data-intro` (`logo`, `title`, `subtitle`, `portrait`, `caption`, `art`, `date`, `soon`) and the intro animates them with no further work.
 
 ## Fonts
 

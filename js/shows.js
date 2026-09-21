@@ -1,20 +1,10 @@
-// Recurring shows. Picking one sets the template and fills in the usual content;
-// everything stays editable afterwards. `episode: true` adds the numbered-episode field.
+// What the tool can make. Each entry picks a template and fills in the usual content;
+// everything stays editable, and each one remembers what was last typed into it.
+// `episode: true` adds the numbered-episode field (printed as a roman numeral).
 window.GL_SHOWS = [
   {
-    id: 'gentalks',
-    name: 'GenTalks',
-    template: 'speakers',
-    episode: true,
-    defaults: {
-      count: 2,
-      title: 'GenTalks',
-      subtitle: 'Conversations with the people\nbuilding on GenLayer',
-    },
-  },
-  {
     id: 'ama',
-    name: 'AMA Agent',
+    name: 'GenLayer AMA',
     template: 'speakers',
     defaults: {
       count: 3,
@@ -23,23 +13,40 @@ window.GL_SHOWS = [
     },
   },
   {
-    id: 'agent-tank',
-    name: 'Agent Tank Livestream',
-    template: 'agent-tank',
-    defaults: {
-      count: 2,
-      title: "GenLayer's\nHack\nathon",
-    },
+    id: 'gentalks',
+    name: 'GenTalks',
+    template: 'gentalks',
+    episode: true,
+    defaults: { count: 2, title: 'Gen\nTalks', subtitle: '', episode: '14' },
   },
   {
     id: 'builders-weekly',
     name: 'Builders Weekly Call',
-    template: 'speakers',
+    template: 'builders-weekly',
     episode: true,
     defaults: {
       count: 1,
       title: 'Builders\nWeekly Call',
       subtitle: 'Open call for everyone\nbuilding on GenLayer',
+      agenda: 'What shipped this week\nStudio and SDK updates\nCommunity demo\nOpen questions',
     },
+  },
+  {
+    id: 'agent-tank',
+    name: 'Agent Tank Livestream',
+    template: 'agent-tank',
+    defaults: { count: 2, title: "GenLayer's\nHack\nathon" },
+  },
+  {
+    id: 'partnership',
+    name: 'Partnership',
+    template: 'partnership',
+    defaults: { title: 'Internet Court New Integration: HOL' },
+  },
+  {
+    id: 'announcement',
+    name: 'Announcement',
+    template: 'announcement',
+    defaults: { title: 'Testnet Bradbury\nis live' },
   },
 ];

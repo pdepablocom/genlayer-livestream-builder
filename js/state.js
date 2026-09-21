@@ -8,7 +8,7 @@ function emptySpeaker() {
 
 function defaultState() {
   return {
-    show: 'custom',
+    show: 'ama',
     episode: '',
     // What each show looked like the last time it was used, so switching back restores it.
     showMemory: {},
@@ -17,7 +17,6 @@ function defaultState() {
     title: 'GenLayer\nAMA',
     subtitle: 'Ask the founders\nCatch the latest news\nClaim a POAP live on the GenLayer portal',
     date: 'July 13, Monday 5PM UTC',
-    quote: '',
     agenda: '',
     speakers: Array.from({ length: MAX_SPEAKERS }, emptySpeaker),
     handles: ['X', '@genlayer.com'],

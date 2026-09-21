@@ -1,10 +1,9 @@
-// Announcement: type only. One big statement, for news that has no faces or logos.
+// Announcement: type only. One big statement and nothing else, for news that has no faces or logos.
 // Designed for this tool on the "GL - Live" system (no Figma frame behind it).
 
 const ANNOUNCEMENT_LAYOUT = {
   column: { x: 96, y: 96, w: 2688, h: 1428 },
   title: { steps: [256, 224, 192, 160, 128], maxLines: 3 },
-  subtitleW: 1800,
 };
 
 function renderAnnouncement(state) {
@@ -26,12 +25,6 @@ function renderAnnouncement(state) {
 
   const body = el('div', 'ab-head');
   body.append(title);
-  if (state.subtitle.trim()) {
-    const subtitle = el('p', 'ab-mono ab-subtitle', { text: state.subtitle, style: { maxWidth: px(L.subtitleW) } });
-    subtitle.dataset.intro = 'subtitle';
-    body.append(subtitle);
-  }
-
   const foot = el('div', 'ab-foot is-spread');
   foot.append(renderPill(state.date));
   const handles = renderHandles(state, true);
@@ -48,6 +41,6 @@ registerTemplate({
   id: 'announcement',
   name: 'Announcement',
   theme: 'live',
-  sections: ['subtitle', 'stream'],
+  sections: ['stream'],
   render: renderAnnouncement,
 });
