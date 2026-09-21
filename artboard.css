@@ -1,0 +1,393 @@
+/* The template. Positions come from js/layouts.js; type and colour live here. */
+
+.artboard {
+  --ink: #070707;
+  --blue: #110fff;
+  --sub: #404040;
+  --role: #9c9c9c;
+  --chip: #f3f3f3;
+  --lineca: "F37 Lineca VF";
+  --mono: "Suisse Int'l Mono";
+
+  position: relative;
+  width: 2880px;
+  height: 1620px;
+  overflow: hidden;
+  background: #fff;
+  color: var(--ink);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.artboard * {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.ab-abs {
+  position: absolute;
+}
+
+.ab-mark {
+  position: absolute;
+  left: 2626px;
+  top: 1376px;
+  width: 158.121px;
+  height: 148.5px;
+  display: block;
+}
+
+.ab-logotype {
+  display: block;
+  flex: none;
+  width: 402.4px;
+  height: 96px;
+  margin-bottom: 48px;
+}
+
+.ab-corner {
+  position: absolute;
+  right: 96px;
+  bottom: 96px;
+  margin: 0;
+}
+
+/* Title block */
+
+.ab-column {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ab-head {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ab-title {
+  font-family: var(--lineca);
+  font-weight: 500;
+  font-size: 160px;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  white-space: pre-line;
+  overflow-wrap: normal;
+  width: 100%;
+}
+
+.ab-episode.is-blue {
+  color: var(--blue);
+}
+
+.ab-title.is-single-line {
+  white-space: nowrap;
+}
+
+.ab-mono {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.ab-subtitle {
+  color: var(--sub);
+  opacity: 0.6;
+  white-space: pre-line;
+  width: 100%;
+}
+
+.ab-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 18px 48px;
+  border-radius: 48px;
+  background: var(--blue);
+  color: #f5f5f5;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.ab-pill.is-compact {
+  padding: 20px 32px;
+}
+
+.ab-foot {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.ab-foot.is-stacked {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+}
+
+/* Announcement, Quote, Agenda */
+
+.ab-logotype.is-flush {
+  margin-bottom: 0;
+}
+
+.ab-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+  width: 100%;
+}
+
+.ab-foot.is-spread {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.ab-quote {
+  line-height: 1;
+  white-space: normal;
+}
+
+.ab-agenda {
+  position: absolute;
+  border-top: 2px solid var(--ink);
+}
+
+.ab-agenda-row {
+  display: flex;
+  align-items: baseline;
+  gap: 64px;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+.ab-agenda-index {
+  flex: none;
+  width: 136px;
+  color: var(--blue);
+}
+
+/* Speaker card */
+
+.ab-card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ab-portrait {
+  position: relative;
+  flex: none;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--ink);
+}
+
+.ab-portrait img {
+  position: absolute;
+  max-width: none;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ab-name {
+  font-family: var(--lineca);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.ab-role {
+  color: var(--role);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+/* Partnership */
+
+.ab-handles {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.ab-handle {
+  padding: 20px 32px;
+  border-radius: 64px;
+  background: var(--chip);
+  white-space: nowrap;
+}
+
+.ab-handle.is-short {
+  padding: 18px 32px;
+  line-height: 1.1;
+}
+
+.ab-handle:has(.ab-dot) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ab-dot {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+/* Intro capture: the cover with every animated element taken out. */
+.artboard.is-bare [data-intro] {
+  visibility: hidden;
+}
+
+.ab-handle span {
+  color: var(--sub);
+  opacity: 0.6;
+}
+
+.ab-logo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+}
+
+.ab-logo img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.ab-divider {
+  position: absolute;
+  background: #000;
+  border-radius: 2px;
+}
+
+/* Agent Tank. Its Druk faces are declared in js/templates/agent-tank.js. */
+
+.artboard[data-theme="agent-tank"] {
+  --lime: #e4ff00;
+  background: radial-gradient(ellipse 1440px 810px at center, #c1f5fb 0%, #9cf0f9 25%, #78eaf7 50%, #54e5f4 75%, #30dff2 100%);
+}
+
+.at-lockup {
+  position: absolute;
+  left: 96px;
+  top: 96px;
+  width: 374.26px;
+  height: 70px;
+}
+
+.at-wide {
+  font-family: "GL Druk Wide", sans-serif;
+}
+
+.at-narrow {
+  font-family: "GL Druk", sans-serif;
+}
+
+.at-title {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #000;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: rotate(-6deg) skewX(-6deg) scaleY(0.99);
+  transform-origin: left center;
+}
+
+.at-big {
+  line-height: 0.9;
+}
+
+.at-kicker {
+  margin-left: 0.9em;
+  line-height: 0.78;
+  color: var(--lime);
+}
+
+.at-pill {
+  position: absolute;
+  left: 96px;
+  bottom: 96px;
+  padding: 32px 48px;
+  border-radius: 40px;
+  background: var(--lime);
+  color: #000;
+  font-size: 32px;
+  line-height: 48px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+}
+
+.at-card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border: 12px solid var(--lime);
+  border-radius: 76px;
+}
+
+.at-photo {
+  border-radius: 64px;
+  margin-bottom: -96px;
+}
+
+.at-plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding: 48px;
+  border: 1.5px solid #6fb8c5;
+  border-radius: 64px;
+  background: #92e9f7;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.at-name {
+  color: #000;
+  text-transform: uppercase;
+}
+
+.at-name p {
+  width: max-content;
+  margin-inline: auto;
+  line-height: 0.8;
+  text-box: trim-both cap alphabetic;
+}
+
+.at-name p + p {
+  margin-top: 0.12em;
+}
+
+.at-role {
+  color: #0094a4;
+  opacity: 1;
+  font-size: 32px;
+  line-height: 36px;
+  letter-spacing: 0;
+  white-space: pre;
+  text-box: trim-both cap alphabetic;
+}

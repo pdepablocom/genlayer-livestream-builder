@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GenLayer Livestream Builder</title>
+  <link rel="icon" href="assets/gl-mark.svg">
+  <script src="js/fonts.js"></script>
+  <link rel="stylesheet" href="artboard.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <aside class="panel">
+    <header class="panel-header">
+      <img src="assets/gl-mark.svg" alt="" width="26" height="24">
+      <h1>Livestream Builder</h1>
+    </header>
+
+    <form class="panel-body" id="form" autocomplete="off">
+      <section>
+        <h2>Show</h2>
+        <div class="field-row is-show">
+          <label class="field">
+            <span class="visually-hidden">Show</span>
+            <select name="show"></select>
+          </label>
+          <label class="field" data-section="episode">
+            <span class="visually-hidden">Episode number</span>
+            <input name="episode" type="text" inputmode="numeric" placeholder="Ep. 14">
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Template</h2>
+        <div class="segmented is-wrapping" role="radiogroup" aria-label="Template" data-bind="template"></div>
+        <p class="hint" id="font-warning" hidden>This template is set in Druk, which isn't installed on this computer, so the type will look wrong. Install Druk Super and Druk Wide Super, then reload.</p>
+      </section>
+
+      <section>
+        <h2>Event</h2>
+        <label class="field">
+          <span>Title</span>
+          <textarea name="title" rows="3" spellcheck="true"></textarea>
+          <small>Press Enter to force a line break.</small>
+        </label>
+        <label class="field" data-section="subtitle">
+          <span>Subtitle</span>
+          <textarea name="subtitle" rows="3" spellcheck="true"></textarea>
+        </label>
+        <label class="field" data-section="quote">
+          <span>Quote</span>
+          <textarea name="quote" rows="4" spellcheck="true" placeholder="What they said. Quotation marks are added for you."></textarea>
+        </label>
+        <label class="field" data-section="agenda">
+          <span>Agenda</span>
+          <textarea name="agenda" rows="5" spellcheck="true" placeholder="One topic per line, up to six"></textarea>
+        </label>
+        <label class="field">
+          <span>Date and time</span>
+          <input name="date" type="text" placeholder="July 13, Monday 5PM UTC">
+        </label>
+      </section>
+
+      <section data-section="speakers">
+        <h2>Speakers</h2>
+        <div class="segmented" role="radiogroup" aria-label="Number of speakers" data-bind="count">
+          <button type="button" role="radio" data-value="1">1</button>
+          <button type="button" role="radio" data-value="2">2</button>
+          <button type="button" role="radio" data-value="3">3</button>
+          <button type="button" role="radio" data-value="4">4</button>
+          <button type="button" role="radio" data-value="5">5</button>
+          <button type="button" role="radio" data-value="6">6</button>
+        </div>
+        <div id="speakers"></div>
+        <p class="hint">Photos turn black and white automatically. Drag a photo in the preview to reframe it, scroll to zoom.</p>
+      </section>
+
+      <section data-section="speakers">
+        <h2>My people</h2>
+        <p class="hint is-first" id="library-count"></p>
+        <div class="button-row">
+          <button type="button" class="button small" id="library-export">Export</button>
+          <button type="button" class="button small" id="library-import">Import</button>
+          <input type="file" id="library-file" accept=".json,application/json" hidden>
+        </div>
+      </section>
+
+      <section data-section="logos">
+        <h2>Logos</h2>
+        <div id="logos"></div>
+        <p class="hint">SVG or transparent PNG works best. One logo sits top right, two get the divider.</p>
+      </section>
+
+      <section data-section="stream">
+        <h2>Where it streams</h2>
+        <div class="field-row">
+          <label class="field"><span>Platform</span><input name="handle0" type="text" placeholder="X"></label>
+          <label class="field"><span>Account</span><input name="handle1" type="text" placeholder="@genlayer"></label>
+        </div>
+      </section>
+    </form>
+
+    <div class="panel-intro">
+      <span>Starts-soon intro</span>
+      <button type="button" class="link" id="intro-preview">Preview</button>
+      <button type="button" class="link" id="intro-download">Download MP4</button>
+    </div>
+
+    <footer class="panel-footer">
+      <button type="button" class="button primary" id="export-full">Download PNG</button>
+      <button type="button" class="button" id="export-hd" title="1920 × 1080">1080p</button>
+      <button type="button" class="button quiet" id="reset">Reset</button>
+    </footer>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="stage-frame" id="frame">
+      <div class="artboard" id="artboard"></div>
+    </div>
+    <p class="stage-meta">2880 × 1620</p>
+  </main>
+
+  <template id="speaker-template">
+    <fieldset class="speaker">
+      <legend></legend>
+      <button type="button" class="thumb" aria-label="Upload photo"></button>
+      <input type="file" accept="image/*" hidden>
+      <div class="speaker-fields">
+        <div class="name-field">
+          <input type="text" data-key="name" placeholder="Name, or pick someone" aria-label="Name" role="combobox" aria-expanded="false" aria-autocomplete="list">
+          <div class="people-menu" hidden></div>
+        </div>
+        <input type="text" data-key="role" placeholder="Role" aria-label="Role">
+        <input type="text" data-key="company" placeholder="Company" aria-label="Company">
+        <div class="speaker-photo-tools">
+          <input type="range" min="1" max="3" step="0.01" aria-label="Zoom">
+          <button type="button" class="link" data-action="remove">Remove photo</button>
+        </div>
+        <div class="speaker-library-tools">
+          <button type="button" class="link" data-action="save-person">Save to my library</button>
+          <button type="button" class="link" data-action="download-person">Download person file</button>
+        </div>
+      </div>
+    </fieldset>
+  </template>
+
+  <template id="logo-template">
+    <div class="logo-row">
+      <button type="button" class="thumb is-logo" aria-label="Upload logo"></button>
+      <input type="file" accept="image/*,.svg" hidden>
+      <div class="logo-tools">
+        <span class="logo-name"></span>
+        <label class="check"><input type="checkbox"> Make it black</label>
+        <button type="button" class="link" data-action="remove">Remove</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="vendor/html-to-image.js"></script>
+  <script src="js/layouts.js"></script>
+  <script src="js/shows.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/photo.js"></script>
+  <script src="js/people-index.js"></script>
+  <script src="js/people.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/templates/speakers.js"></script>
+  <script src="js/templates/partnership.js"></script>
+  <script src="js/templates/announcement.js"></script>
+  <script src="js/templates/quote.js"></script>
+  <script src="js/templates/agenda.js"></script>
+  <script src="js/templates/agent-tank.js"></script>
+  <script src="vendor/mp4-muxer.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
