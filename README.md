@@ -1,5 +1,7 @@
 # GenLayer Livestream Builder
 
+Live at https://pdepablocom.github.io/genlayer-livestream-builder/
+
 Makes GenLayer livestream covers (2880 × 1620) and a looping "starts soon" intro from a form, using the layouts in the Figma files `GL - Live` and `GL - Portal`.
 
 It is a static page. Photos and logos are processed in the browser and never uploaded, so there is no server and nothing to store. Your last session and your saved people are remembered in that browser only.
@@ -9,7 +11,7 @@ It is a static page. Photos and logos are processed in the browser and never upl
 Open `index.html` (double-click works) or the hosted URL.
 
 1. **Show**: pick GenTalks, AMA Agent, Agent Tank Livestream or Builders Weekly Call to fill in the usual template and copy, or stay on Custom. Numbered shows get an episode field that prints as a roman numeral. Each show remembers what you last typed.
-2. **Template**: Speakers (1 to 6), Partnership (one or two logos), Agent Tank (1 or 2).
+2. **Template**: Speakers (1 to 6), Partnership (one or two logos), Announcement (type only), Quote (one speaker and what they said), Agenda (numbered run-of-show, up to six topics), Agent Tank (1 or 2).
 3. **Speakers**: start typing a name to pick someone from the list, or filter by tag. Picking fills the name, role, company and photo. For someone new, type the details and add a photo: it turns black and white on upload. Drag the photo in the preview to reframe it, scroll over it to zoom.
 4. **Download PNG** (2880 × 1620) or **1080p**. **Starts-soon intro** previews the animated loop and downloads it as a 12 second, 1920 × 1080 MP4 that loops seamlessly.
 
