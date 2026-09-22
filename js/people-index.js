@@ -47,7 +47,7 @@ window.GL_PEOPLE = [
   },
   {
     "id": "edgars-nemse",
-    "name": "Edgars Nemse",
+    "name": "Edgars Nemše",
     "role": "CEO",
     "company": "GenLayer Foundation",
     "tags": [
