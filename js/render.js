@@ -79,16 +79,21 @@ function renderPill(text, compact) {
   return pill;
 }
 
+// In the intro, "where it streams" gives way to a generic "Starting soon" with a live dot.
+function renderStartingSoon() {
+  const node = el('div', 'ab-soon');
+  node.dataset.intro = 'soon';
+  node.append(el('i', 'ab-dot'), el('span', '', { text: 'Starting soon' }));
+  return node;
+}
+
 function renderHandles(state, short) {
+  if (state.intro) return renderStartingSoon();
   const handles = state.handles.map((s) => s.trim()).filter(Boolean);
-  // The intro swaps "where it streams" for a "Starting soon" chip with a live dot.
-  if (state.intro) handles.splice(0, handles.length, 'Starting soon');
   if (!handles.length) return null;
   const rowNode = el('div', 'ab-handles');
-  rowNode.dataset.intro = 'soon';
   for (const handle of handles) {
     const chip = el('div', 'ab-mono ab-handle' + (short ? ' is-short' : ''));
-    if (state.intro) chip.append(el('i', 'ab-dot'));
     chip.append(el('span', '', { text: handle }));
     rowNode.append(chip);
   }

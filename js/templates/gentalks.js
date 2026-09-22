@@ -3,10 +3,9 @@
 
 const GENTALKS_LAYOUT = {
   maxSpeakers: 3,
-  // Word size cap, numeral size relative to the word (its cap height spans both lines of the word).
-  lockup: { maxSize: 330, numeralRatio: 2.27, gapRatio: 0.22 },
-  // Narrower than this, the numeral drops under the word instead of sitting beside it.
-  stackBelow: 1000,
+  // "Gen Talks" fills the column up to wordMax; the numeral sits underneath, as wide as the column
+  // allows, never larger than numeralMax. Both step down together if the column runs out of height.
+  lockup: { wordMax: 360, numeralMax: 480, gapRatio: 0.18 },
 };
 
 function renderGenTalks(state) {
@@ -19,7 +18,7 @@ function renderGenTalks(state) {
   const logotype = svgNode(GL_LOGOTYPE_SVG);
   logotype.dataset.intro = 'logo';
 
-  const lockup = el('div', 'gt-lockup' + (w < GENTALKS_LAYOUT.stackBelow ? ' is-stacked' : ''));
+  const lockup = el('div', 'gt-lockup');
   lockup.dataset.intro = 'title';
   lockup.dataset.max = w;
   lockup.append(el('p', 'ab-title gt-word', { text: state.title }));
@@ -47,25 +46,34 @@ function renderGenTalks(state) {
   return nodes;
 }
 
-// The lockup is set as large as the text column allows.
+// The lockup is set as large as the text column allows, in width and then in height.
 function fitGenTalks(artboard) {
   const L = GENTALKS_LAYOUT.lockup;
+  const column = artboard.querySelector('.ab-column');
+  const head = column.querySelector('.ab-head');
+  const foot = column.querySelector('.ab-foot');
   const lockup = artboard.querySelector('.gt-lockup');
   const word = lockup.querySelector('.gt-word');
   const numeral = lockup.querySelector('.gt-numeral');
   const max = Number(lockup.dataset.max);
-  const stacked = lockup.classList.contains('is-stacked');
-  const setSize = (size) => {
-    word.style.fontSize = px(size);
-    lockup.style.gap = px(size * L.gapRatio);
-    if (numeral) numeral.style.fontSize = px(size * (stacked ? 1 : L.numeralRatio));
+  const room = column.clientHeight - foot.offsetHeight - 96;
+
+  const widthFor = (node, cap) => {
+    node.style.fontSize = '100px';
+    return Math.min(cap, (100 * max) / node.scrollWidth);
   };
-  setSize(100);
-  setSize(Math.min(stacked ? TITLE_STEPS[0] : L.maxSize, (100 * max) / lockup.scrollWidth));
-  // Stacked, the numeral becomes the hero: as wide as the column, within reason.
-  if (stacked && numeral) {
-    numeral.style.fontSize = '100px';
-    numeral.style.fontSize = px(Math.min(420, (100 * max) / numeral.scrollWidth));
+  let wordSize = widthFor(word, L.wordMax);
+  let numeralSize = numeral ? widthFor(numeral, L.numeralMax) : 0;
+  const apply = (k) => {
+    word.style.fontSize = px(wordSize * k);
+    lockup.style.gap = px(wordSize * k * L.gapRatio);
+    if (numeral) numeral.style.fontSize = px(numeralSize * k);
+  };
+  let k = 1;
+  apply(k);
+  while (head.offsetHeight > room && k > 0.4) {
+    k -= 0.05;
+    apply(k);
   }
 }
 

@@ -9,8 +9,6 @@ let state = defaultState();
 let previewScale = 1;
 let saveTimer;
 
-const missingFonts = new Set();
-
 function update(mutate) {
   if (mutate) mutate(state);
   const limits = GL_TEMPLATES[state.template];
@@ -93,7 +91,6 @@ function syncPanel() {
     button.hidden = Number(button.dataset.value) > max || Number(button.dataset.value) < min;
   }
   document.querySelector('[data-section=speakers] h2').textContent = template.speakerLabel ? template.speakerLabel + 's' : 'Speakers';
-  document.getElementById('font-warning').hidden = !missingFonts.has(template.id);
 
   const show = window.GL_SHOWS.find((item) => item.id === state.show);
   const sections = [...GL_TEMPLATES[state.template].sections, ...(show && show.episode ? ['episode'] : [])];
@@ -454,14 +451,9 @@ async function start() {
     document.fonts.load('500 72px "F37 Lineca VF"'),
     document.fonts.load('400 40px "Suisse Int\'l Mono"'),
     document.fonts.load('400 16px "Suisse Int\'l"'),
+    document.fonts.load('400 100px "GL Druk"'),
+    document.fonts.load('400 100px "GL Druk Wide"'),
   ]);
-  // Templates set in fonts that aren't bundled: note which ones this computer can't draw.
-  for (const template of Object.values(GL_TEMPLATES)) {
-    for (const font of template.fonts || []) {
-      const faces = await document.fonts.load(font).catch(() => []);
-      if (!faces.length) missingFonts.add(template.id);
-    }
-  }
   fitPreview();
   update();
   document.body.classList.add('is-ready');

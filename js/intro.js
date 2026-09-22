@@ -50,7 +50,7 @@ async function prepareIntro(state) {
     let dot = null;
     if (dotNode) {
       const r = dotNode.getBoundingClientRect();
-      dot = { x: (r.left - origin.left + r.width / 2) * k, y: (r.top - origin.top + r.height / 2) * k, r: (r.width / 2) * k };
+      dot = { x: Math.floor((r.left - origin.left) * k) - 2, y: Math.floor((r.top - origin.top) * k) - 2, w: Math.ceil(r.width * k) + 4, h: Math.ceil(r.height * k) + 4 };
     }
     const full = await artboardToCanvas(stageNode, k);
     stageNode.classList.add('is-bare');
@@ -89,13 +89,10 @@ function drawIntroFrame(ctx, scene, t) {
     ctx.restore();
   }
 
-  // The live dot blinks: solid blue, then covered with the chip colour. No halo, no faded blue.
+  // The live dot blinks: solid blue, then the bare background put back over it. No halo, no faded blue.
   const soon = layers.find((layer) => layer.hasDot);
   if (dot && soon && t > soon.at + soon.dur && t < INTRO.outStart && (t - soon.at) % 1.4 > 0.9) {
-    ctx.fillStyle = '#f3f3f3';
-    ctx.beginPath();
-    ctx.arc(dot.x, dot.y, dot.r + 1.5, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.drawImage(bare, dot.x, dot.y, dot.w, dot.h, dot.x, dot.y, dot.w, dot.h);
   }
 }
 

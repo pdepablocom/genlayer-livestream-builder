@@ -186,7 +186,8 @@
 
 .gt-lockup {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
   white-space: nowrap;
 }
 
@@ -199,13 +200,8 @@
 }
 
 .gt-numeral {
-  line-height: 1;
+  line-height: 0.9;
   color: var(--blue);
-}
-
-.gt-lockup.is-stacked {
-  flex-direction: column;
-  align-items: flex-start;
 }
 
 .gt-head {
@@ -272,18 +268,33 @@
   line-height: 1.1;
 }
 
-.ab-handle:has(.ab-dot) {
+.ab-soon {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 40px;
+  font-family: var(--lineca);
+  font-weight: 500;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: var(--ink);
 }
 
 .ab-dot {
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--blue);
+}
+
+.artboard[data-theme="agent-tank"] .ab-soon {
+  color: #000;
+}
+
+.artboard[data-theme="agent-tank"] .ab-dot {
+  background: #000;
 }
 
 /* Intro capture: the cover with every animated element taken out. */
@@ -315,7 +326,7 @@
   border-radius: 2px;
 }
 
-/* Agent Tank. Its Druk faces are declared in js/templates/agent-tank.js. */
+/* Agent Tank */
 
 .artboard[data-theme="agent-tank"] {
   --lime: #e4ff00;

@@ -9,6 +9,9 @@ const faces = [
   { family: 'F37 Lineca VF', file: 'F37Lineca-VF.woff2', weight: '10 900' },
   { family: "Suisse Int'l", file: 'SuisseIntl-Regular.woff2', weight: '400' },
   { family: "Suisse Int'l Mono", file: 'SuisseIntlMono-Regular.woff2', weight: '400' },
+  // Agent Tank display faces (trial cuts, cleared for the hackathon material).
+  { family: 'GL Druk', file: 'DrukSuper-Trial.woff2', weight: '400' },
+  { family: 'GL Druk Wide', file: 'DrukWideSuper-Trial.woff2', weight: '400' },
 ];
 
 const css = faces.map(({ family, file, weight }) => {

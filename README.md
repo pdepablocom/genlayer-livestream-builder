@@ -12,7 +12,7 @@ Open `index.html` (double-click works) or the hosted URL.
 
 1. **What are you making**: pick one. Each choice has its own design and remembers what you last typed into it.
    - **GenLayer AMA**: 1 to 6 speakers, the layouts from `GL - Live`.
-   - **GenTalks**: 1 to 3 people on the right, a giant "Gen Talks" and the episode as a blue roman numeral on the left.
+   - **GenTalks**: 1 to 3 people on the right; a giant "Gen Talks" with the episode as a blue roman numeral underneath on the left.
    - **Builders Weekly Call**: numbered agenda (up to six topics, five with hosts) and up to two hosts.
    - **Agent Tank Livestream**: the Agent Tank look, 1 or 2 speakers.
    - **Partnership**: title plus one or two logos.
@@ -47,7 +47,7 @@ All values are artboard pixels, the same numbers you read in Figma.
 
 F37 Lineca VF (Medium, −3%) and Suisse Int'l / Suisse Int'l Mono, in `fonts/`. They are inlined into `js/fonts.js` as base64 so exports can embed them, including when the page is opened from disk. After replacing a font file run `node tools/build-fonts.js`.
 
-**Agent Tank uses Druk** (Druk Super and Druk Wide Super). Druk is licensed separately and is not bundled: the template uses the copy installed on your computer, and the panel warns you when there isn't one. Anyone making Agent Tank covers needs Druk installed.
+Agent Tank uses Druk Super and Druk Wide Super (trial cuts, cleared for the hackathon material), bundled the same way.
 
 ## Deploy
 
