@@ -23,9 +23,20 @@ Open `index.html` (double-click works) or the hosted URL.
 
 Text that doesn't fit steps down a fixed size ladder rather than scaling freely, so spacing stays on the grid.
 
+## Editing the live tool (no developer needed)
+
+The site rebuilds and redeploys itself on every push to `main` (`.github/workflows/deploy.yml`), so anyone with write access to the repo can change it directly on github.com. Ask the repo owner for access first.
+
+- **Add a person**: in the app, fill in the speaker and click **Download person file**. On github.com open the `people` folder, **Add file → Upload files**, drop the file in, and commit. Two to three minutes later they are in everyone's list.
+- **Fix a name, role, company or tags**: open `people/<person>.json` on github.com, click the pencil, edit the first lines (the long `photo` line at the end is the picture: leave it), commit.
+- **Change a show's default copy**: edit `js/shows.js` the same way.
+- **Check a deploy**: the **Actions** tab shows each publish; green means it is live.
+
+Everything else (layouts, fonts, colours) is code and needs a developer: see below.
+
 ## People
 
-- **Shared list** (everyone sees it): one file per person in `people/`. To add someone, set them up once in the app, click **Download person file**, put the file in `people/`, edit its `tags` if needed (`team`, `guest`, anything you like: tags become the filter chips), then run `node tools/build-people.js` and deploy.
+- **Shared list** (everyone sees it): one file per person in `people/`, added as described above. Tags (`team`, `guest`, anything you like) become the filter chips.
 - **My people** (this browser only): **Save to my library** on any speaker. Export and Import move a library between colleagues.
 
 ## Change the design
@@ -51,4 +62,4 @@ Agent Tank uses Druk Super and Druk Wide Super (trial cuts, cleared for the hack
 
 ## Deploy
 
-Any static host. For GitHub Pages: push this folder as the repo root and enable Pages on `main`. There is no build step beyond the two scripts above.
+GitHub Pages, built by the workflow above. Pushing to `main` is the whole deploy. To run it locally instead: `node tools/build-fonts.js && node tools/build-people.js`, then open `index.html`.

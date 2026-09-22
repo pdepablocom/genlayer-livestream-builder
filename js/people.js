@@ -37,12 +37,13 @@ function loadPersonPhoto(person) {
 
 function speakerToPerson(speaker) {
   const onTeam = /genlayer/i.test(speaker.company);
+  // Readable fields first, the photo last: the file is meant to be edited on github.com.
   return {
-    id: personId(speaker.name),
     name: speaker.name,
     role: speaker.role,
     company: speaker.company,
     tags: [onTeam ? 'team' : 'guest'],
+    id: personId(speaker.name),
     photo: speaker.photo,
   };
 }
