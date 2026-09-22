@@ -62,4 +62,4 @@ Agent Tank uses Druk Super and Druk Wide Super (trial cuts, cleared for the hack
 
 ## Deploy
 
-GitHub Pages, built by the workflow above. Pushing to `main` is the whole deploy. To run it locally instead: `node tools/build-fonts.js && node tools/build-people.js`, then open `index.html`.
+Vercel, connected to this repo: pushing to `main` is the whole deploy, `vercel.json` holds the build settings. (GitHub Pages still publishes too, via `.github/workflows/deploy.yml`.) To run it locally instead: `node tools/build-fonts.js && node tools/build-people.js`, then open `index.html`.
