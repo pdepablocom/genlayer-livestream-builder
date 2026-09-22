@@ -144,10 +144,11 @@ h2 {
 
 select {
   appearance: none;
-  padding-right: 36px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23070707' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  padding-right: 44px;
+  /* Remix Icon "arrow-down-s-line" */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='%23070707'%3E%3Cpath d='M12 13.1717L16.9497 8.22192L18.3639 9.63614L12 16L5.63604 9.63614L7.05025 8.22192L12 13.1717Z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 14px center;
+  background-position: right 12px center;
   cursor: pointer;
 }
 
@@ -172,7 +173,7 @@ textarea {
   padding: 9px 12px;
   border: 1px solid transparent;
   border-radius: 8px;
-  background: var(--field);
+  background-color: var(--field);
   color: var(--ink);
   font: inherit;
   font-size: 16px;
@@ -196,7 +197,7 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 0;
   border-color: var(--blue);
-  background: #fff;
+  background-color: #fff;
 }
 
 button {
