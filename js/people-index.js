@@ -37,6 +37,15 @@ window.GL_PEOPLE = [
     ]
   },
   {
+    "id": "david-riudor",
+    "name": "David Riudor",
+    "role": "Chief Institutional Officer",
+    "company": "GenLayer Foundation",
+    "tags": [
+      "team"
+    ]
+  },
+  {
     "id": "edgars-nemse",
     "name": "Edgars Nemse",
     "role": "CEO",
