@@ -68,7 +68,7 @@ function fillPanel() {
   form.agenda.value = state.agenda;
   form.title.value = state.title;
   form.subtitle.value = state.subtitle;
-  form.date.value = state.date;
+  form.when.value = state.when;
   form.handle0.value = state.handles[0];
   form.handle1.value = state.handles[1];
   speakersRoot.querySelectorAll('.speaker').forEach((node, i) => {
@@ -106,6 +106,8 @@ function syncPanel() {
     if (photo) node.querySelector('input[type=range]').value = photo.zoom;
   });
 
+  document.getElementById('when-local').textContent = localTimeHint(state.when);
+
   document.getElementById('library-count').textContent = myPeople.length
     ? `${myPeople.length} saved in this browser. Export to share them with a colleague.`
     : 'Save a speaker to reuse them next time. Saved people stay in this browser.';
@@ -119,6 +121,30 @@ function syncPanel() {
     node.querySelector('.logo-name').textContent = logo.name || '';
     node.querySelector('input[type=checkbox]').checked = Boolean(logo.black);
   });
+}
+
+// "2026-07-13T17:00" (UTC) → "July 13, Monday 5PM UTC", the one format every cover uses.
+function formatWhen(when) {
+  const date = parseWhen(when);
+  if (!date) return '';
+  const part = (options) => date.toLocaleString('en-US', { timeZone: 'UTC', ...options });
+  const h = date.getUTCHours();
+  const m = date.getUTCMinutes();
+  const time = `${h % 12 || 12}${m ? ':' + String(m).padStart(2, '0') : ''}${h < 12 ? 'AM' : 'PM'}`;
+  return `${part({ month: 'long' })} ${date.getUTCDate()}, ${part({ weekday: 'long' })} ${time} UTC`;
+}
+
+function parseWhen(when) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(when || '');
+  return m ? new Date(Date.UTC(m[1], m[2] - 1, m[3], m[4], m[5])) : null;
+}
+
+// The picker is in UTC, so say what that is where the person filling it in lives.
+function localTimeHint(when) {
+  const date = parseWhen(when);
+  if (!date || date.getTimezoneOffset() === 0) return '';
+  const local = date.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+  return `Your time: ${local}`;
 }
 
 async function setPortrait(index, file) {
@@ -139,7 +165,8 @@ function bindPanel() {
   form.addEventListener('input', (e) => {
     const t = e.target;
     if (t.name === 'show') switchShow(t.value);
-    else if (['title', 'subtitle', 'date', 'episode', 'agenda'].includes(t.name)) update((s) => (s[t.name] = t.value));
+    else if (['title', 'subtitle', 'episode', 'agenda'].includes(t.name)) update((s) => (s[t.name] = t.value));
+    else if (t.name === 'when') update((s) => ((s.when = t.value), (s.date = formatWhen(t.value))));
     else if (t.name === 'handle0' || t.name === 'handle1') update((s) => (s.handles[Number(t.name.slice(-1))] = t.value));
     else if (t.dataset.key) update((s) => (s.speakers[t.closest('.speaker').dataset.index][t.dataset.key] = t.value));
     else if (t.type === 'range') update((s) => (s.speakers[t.closest('.speaker').dataset.index].photo.zoom = Number(t.value)));
@@ -442,6 +469,8 @@ async function start() {
   const saved = await store.get('state');
   myPeople = (await store.get('library')) || [];
   if (saved) state = { ...defaultState(), ...saved };
+  // Saved before the date picker existed: keep the typed date on the cover until a new one is picked.
+  if (saved && !('when' in saved)) state.when = '';
   if (!window.GL_SHOWS.some((show) => show.id === state.show)) state.show = 'ama';
   state.template = window.GL_SHOWS.find((show) => show.id === state.show).template;
   fillPanel();

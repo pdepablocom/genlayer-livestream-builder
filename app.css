@@ -142,6 +142,12 @@ h2 {
   grid-template-columns: 1fr;
 }
 
+input[type="datetime-local"] {
+  min-height: 42px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
 select {
   appearance: none;
   padding-right: 44px;
@@ -166,6 +172,7 @@ select {
 }
 
 input[type="text"],
+input[type="datetime-local"],
 select,
 textarea {
   display: block;
@@ -187,12 +194,14 @@ textarea::placeholder {
 }
 
 input[type="text"]:hover,
+input[type="datetime-local"]:hover,
 select:hover,
 textarea:hover {
   border-color: var(--line);
 }
 
 input[type="text"]:focus-visible,
+input[type="datetime-local"]:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 0;

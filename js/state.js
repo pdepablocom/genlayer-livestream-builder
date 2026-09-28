@@ -16,6 +16,8 @@ function defaultState() {
     count: 3,
     title: 'GenLayer\nAMA',
     subtitle: 'Ask the founders\nCatch the latest news\nClaim a POAP live on the GenLayer portal',
+    // Picked in UTC as "YYYY-MM-DDTHH:MM"; `date` is the pill text written from it.
+    when: '2026-07-13T17:00',
     date: 'July 13, Monday 5PM UTC',
     agenda: '',
     speakers: Array.from({ length: MAX_SPEAKERS }, emptySpeaker),

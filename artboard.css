@@ -4,7 +4,7 @@
   --ink: #070707;
   --blue: #110fff;
   --sub: #404040;
-  --role: #9c9c9c;
+  --role: #6b6b6b;
   --chip: #f3f3f3;
   --lineca: "F37 Lineca VF";
   --mono: "Suisse Int'l Mono";
@@ -244,7 +244,6 @@
 
 .ab-role {
   color: var(--role);
-  opacity: 0.6;
   white-space: nowrap;
 }
 

@@ -46,8 +46,9 @@
           <textarea name="agenda" rows="5" spellcheck="true" placeholder="One topic per line, up to six"></textarea>
         </label>
         <label class="field">
-          <span>Date and time</span>
-          <input name="date" type="text" placeholder="July 13, Monday 5PM UTC">
+          <span>Date and time (UTC)</span>
+          <input name="when" type="datetime-local" step="900">
+          <small id="when-local"></small>
         </label>
       </section>
 
