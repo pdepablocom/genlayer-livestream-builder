@@ -214,33 +214,38 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 32px;
+  gap: 40px;
 }
 
+/* Names are trimmed to cap height so their tops sit exactly on the top edge of the pictures. */
 .ab-name.ft-lead-name {
   white-space: normal;
   line-height: 0.95;
+  text-box: trim-both cap alphabetic;
 }
 
 .ft-row {
   position: absolute;
   display: flex;
+  align-items: flex-start;
 }
 
 .ft-row-text {
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: center;
-  gap: 16px;
+  gap: 24px;
   min-width: 0;
-  border-radius: 0 4px 4px 0;
-  background: var(--chip);
 }
 
-.ft-row .ab-portrait {
-  border-radius: 4px 0 0 4px;
+.ft-row-text .ab-name {
+  text-box: trim-both cap alphabetic;
+}
+
+.ft-logo {
+  position: absolute;
+  display: block;
+  width: auto;
 }
 
 .ft-head {

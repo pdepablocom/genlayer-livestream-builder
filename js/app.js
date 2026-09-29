@@ -115,8 +115,10 @@ function syncPanel() {
     : 'Save a speaker to reuse them next time. Saved people stay in this browser.';
   document.getElementById('library-export').disabled = !myPeople.length;
 
+  document.getElementById('logos-hint').textContent = template.logoHint || 'SVG or transparent PNG works best. One logo sits top right, two get the divider.';
   logosRoot.querySelectorAll('.logo-row').forEach((node, i) => {
     const logo = state.logos[i];
+    node.hidden = i >= (template.maxLogos || 2);
     node.querySelector('.thumb').style.backgroundImage = logo.src ? `url(${logo.black ? logo.srcBlack : logo.src})` : '';
     node.querySelector('.thumb').classList.toggle('has-image', Boolean(logo.src));
     node.querySelector('.logo-tools').hidden = !logo.src;

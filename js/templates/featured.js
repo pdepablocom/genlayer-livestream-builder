@@ -1,23 +1,32 @@
 // Main speaker + co-speakers. Speaker 1 is the headliner: name column on the left, a large portrait
-// beside it. Everyone else stacks down the right as rows. A single-line title band runs along the
-// bottom (as on the 4-up cover), with an optional black label above it ("KBW Panel") so the kind of
-// event reads at first glance. Designed for this tool on the "GL - Live" system (no Figma frame).
+// beside it. Everyone else stacks down the right: square photo, name and role beside it. Every name
+// is top-aligned with its picture. The event's own logo (first Logos slot) sits top-left and pushes
+// the speakers down. A single-line title band runs along the bottom (as on the 4-up cover), with an
+// optional black label above it ("KBW Panel"). Designed for this tool on the "GL - Live" system.
 
 const FEATURED_LAYOUT = {
-  top: { y: 96, h: 900 },
+  // Where the speakers sit: from the top margin, or below the event logo when there is one.
+  top: { y: 96, bottom: 1012 },
+  logo: { h: 88, maxW: 620, gap: 64 },
   main: { textW: 620, gap: 48, portraitW: 972, nameSteps: [128, 112, 96, 88, 80], roleSteps: [40, 36, 32] },
   // The co-speaker stack fills the top zone exactly, whatever the count.
-  rows: { x: 1784, w: 1000, gap: 24, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], pad: 56, minTextW: 560 },
-  band: { y: 1044, h: 480 },
+  rows: { x: 1784, w: 1000, gap: 32, textGap: 48, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], minTextW: 560 },
+  band: { y: 1060, h: 464 },
   maxSpeakers: 5,
 };
 
-function featuredRows(count) {
+function featuredTop(state) {
   const L = FEATURED_LAYOUT;
-  const n = Math.max(1, count - 1);
-  const h = (L.top.h - L.rows.gap * (n - 1)) / n;
-  // Landscape 5:4 photos, but the name panel always keeps at least minTextW.
-  return { n, h, portraitW: Math.min(Math.round(h * 1.25), L.rows.w - L.rows.minTextW) };
+  const y = state.logos[0].src ? L.top.y + L.logo.h + L.logo.gap : L.top.y;
+  return { y, h: L.top.bottom - y };
+}
+
+function featuredRows(state) {
+  const L = FEATURED_LAYOUT;
+  const n = Math.max(1, state.count - 1);
+  const h = (featuredTop(state).h - L.rows.gap * (n - 1)) / n;
+  // Square photos, but the name always keeps at least minTextW beside them.
+  return { n, h, size: Math.min(h, L.rows.w - L.rows.minTextW) };
 }
 
 function featuredPortrait(speaker, index, w, h) {
@@ -51,39 +60,51 @@ function featuredRole(speaker, steps, max) {
 function renderFeatured(state) {
   const L = FEATURED_LAYOUT;
   const nodes = [];
+  const top = featuredTop(state);
+
+  const eventLogo = state.logos[0];
+  if (eventLogo.src) {
+    const logo = el('img', 'ft-logo', {
+      src: eventLogo.black ? eventLogo.srcBlack : eventLogo.src,
+      alt: '',
+      style: { left: px(ARTBOARD.margin), top: px(L.top.y), height: px(L.logo.h), maxWidth: px(L.logo.maxW) },
+    });
+    logo.dataset.intro = 'art';
+    nodes.push(logo);
+  }
 
   // Headliner.
   const lead = state.speakers[0];
   const leadText = el('div', 'ft-lead', {
-    style: { left: px(ARTBOARD.margin), top: px(L.top.y), width: px(L.main.textW), height: px(L.top.h) },
+    style: { left: px(ARTBOARD.margin), top: px(top.y), width: px(L.main.textW), height: px(top.h) },
   });
   leadText.dataset.intro = 'caption';
   const leadName = el('p', 'ab-name ft-lead-name' + (lead.name ? '' : ' ab-placeholder'), { text: lead.name || 'Main speaker' });
   Object.assign(leadName.dataset, { fit: 'lines', steps: L.main.nameSteps.join(','), max: L.main.textW, maxLines: 2 });
   leadText.append(leadName, featuredRole(lead, L.main.roleSteps, L.main.textW));
-  const leadPortrait = featuredPortrait(lead, 0, L.main.portraitW, L.top.h);
+  const leadPortrait = featuredPortrait(lead, 0, L.main.portraitW, top.h);
   Object.assign(leadPortrait.style, {
     position: 'absolute',
     left: px(ARTBOARD.margin + L.main.textW + L.main.gap),
-    top: px(L.top.y),
+    top: px(top.y),
   });
   nodes.push(leadText, leadPortrait);
 
   // Co-speakers.
-  const R = featuredRows(state.count);
+  const R = featuredRows(state);
   for (let i = 1; i <= R.n; i++) {
     const speaker = state.speakers[i];
     const row = el('div', 'ft-row', {
-      style: { left: px(L.rows.x), top: px(L.top.y + (i - 1) * (R.h + L.rows.gap)), width: px(L.rows.w), height: px(R.h) },
+      style: { left: px(L.rows.x), top: px(top.y + (i - 1) * (R.h + L.rows.gap)), width: px(L.rows.w), gap: px(L.rows.textGap) },
     });
-    const text = el('div', 'ft-row-text', { style: { padding: `0 ${px(L.rows.pad)}` } });
+    const text = el('div', 'ft-row-text');
     text.dataset.intro = 'caption';
     text.dataset.introIndex = i;
-    const textW = L.rows.w - R.portraitW - L.rows.pad * 2;
+    const textW = L.rows.w - R.size - L.rows.textGap;
     const name = el('p', 'ab-name' + (speaker.name ? '' : ' ab-placeholder'), { text: speaker.name || 'Name' });
     Object.assign(name.dataset, { fit: 'width', steps: L.rows.nameSteps.join(','), max: textW });
     text.append(name, featuredRole(speaker, L.rows.roleSteps, textW));
-    row.append(featuredPortrait(speaker, i, R.portraitW, R.h), text);
+    row.append(featuredPortrait(speaker, i, R.size, R.size), text);
     nodes.push(row);
   }
 
@@ -122,11 +143,15 @@ registerTemplate({
   id: 'featured',
   name: 'Main speaker',
   theme: 'live',
-  sections: ['tag', 'subtitle', 'speakers', 'stream'],
+  sections: ['tag', 'subtitle', 'speakers', 'logos', 'stream'],
+  maxLogos: 1,
+  logoHint: 'The event logo, top left. SVG or transparent PNG works best.',
   minSpeakers: 2,
   speakerLegend: (i) => (i ? `Co-speaker ${i}` : 'Main speaker'),
   maxSpeakers: FEATURED_LAYOUT.maxSpeakers,
-  portraitFrame: (state, index) =>
-    index ? { w: featuredRows(state.count).portraitW, h: featuredRows(state.count).h } : { w: FEATURED_LAYOUT.main.portraitW, h: FEATURED_LAYOUT.top.h },
+  portraitFrame: (state, index) => {
+    if (index) return { w: featuredRows(state).size, h: featuredRows(state).size };
+    return { w: FEATURED_LAYOUT.main.portraitW, h: featuredTop(state).h };
+  },
   render: renderFeatured,
 });
