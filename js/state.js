@@ -10,6 +10,7 @@ function defaultState() {
   return {
     show: 'ama',
     episode: '',
+    tag: '',
     // What each show looked like the last time it was used, so switching back restores it.
     showMemory: {},
     template: 'speakers',

@@ -13,6 +13,17 @@ window.GL_SHOWS = [
     },
   },
   {
+    id: 'panel',
+    name: 'Panel (main speaker)',
+    template: 'featured',
+    defaults: {
+      count: 4,
+      tag: 'Panel',
+      title: 'Panel title',
+      subtitle: '',
+    },
+  },
+  {
     id: 'gentalks',
     name: 'GenTalks',
     template: 'gentalks',

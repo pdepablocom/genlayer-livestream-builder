@@ -48,7 +48,7 @@ function buildPanel() {
   }
 }
 
-const SHOW_FIELDS = ['title', 'subtitle', 'count', 'episode', 'agenda'];
+const SHOW_FIELDS = ['title', 'subtitle', 'count', 'episode', 'agenda', 'tag'];
 
 // Remembers the outgoing show's content, then loads the incoming show's last content or its defaults.
 function switchShow(id) {
@@ -57,7 +57,7 @@ function switchShow(id) {
     s.show = id;
     const show = window.GL_SHOWS.find((item) => item.id === id);
     s.template = show.template;
-    Object.assign(s, { episode: '', subtitle: '', agenda: '' }, show.defaults, s.showMemory[id]);
+    Object.assign(s, { episode: '', subtitle: '', agenda: '', tag: '' }, show.defaults, s.showMemory[id]);
   });
   fillPanel();
 }
@@ -65,6 +65,7 @@ function switchShow(id) {
 function fillPanel() {
   form.show.value = state.show;
   form.episode.value = state.episode;
+  form.tag.value = state.tag;
   form.agenda.value = state.agenda;
   form.title.value = state.title;
   form.subtitle.value = state.subtitle;
@@ -99,6 +100,7 @@ function syncPanel() {
   speakersRoot.querySelectorAll('.speaker').forEach((node, i) => {
     const { photo } = state.speakers[i];
     node.hidden = i >= state.count;
+    node.querySelector('legend').textContent = template.speakerLegend ? template.speakerLegend(i) : `Speaker ${i + 1}`;
     node.querySelector('.thumb').style.backgroundImage = photo ? `url(${photo.src})` : '';
     node.querySelector('.thumb').classList.toggle('has-image', Boolean(photo));
     node.querySelector('.speaker-photo-tools').hidden = !photo;
@@ -165,7 +167,7 @@ function bindPanel() {
   form.addEventListener('input', (e) => {
     const t = e.target;
     if (t.name === 'show') switchShow(t.value);
-    else if (['title', 'subtitle', 'episode', 'agenda'].includes(t.name)) update((s) => (s[t.name] = t.value));
+    else if (['title', 'subtitle', 'episode', 'agenda', 'tag'].includes(t.name)) update((s) => (s[t.name] = t.value));
     else if (t.name === 'when') update((s) => ((s.when = t.value), (s.date = formatWhen(t.value))));
     else if (t.name === 'handle0' || t.name === 'handle1') update((s) => (s.handles[Number(t.name.slice(-1))] = t.value));
     else if (t.dataset.key) update((s) => (s.speakers[t.closest('.speaker').dataset.index][t.dataset.key] = t.value));
@@ -411,7 +413,7 @@ function bindPreview() {
 
   artboard.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    const frame = GL_TEMPLATES[state.template].portraitFrame(state);
+    const frame = GL_TEMPLATES[state.template].portraitFrame(state, drag.index);
     const photo = state.speakers[drag.index].photo;
     const r = photoRect(photo, frame.w, frame.h);
     const dx = (e.clientX - drag.x) / previewScale;
