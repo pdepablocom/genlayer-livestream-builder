@@ -214,20 +214,28 @@
   position: absolute;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 40px;
 }
 
-/* Names are trimmed to cap height so their tops sit exactly on the top edge of the pictures. */
+/* Names and roles are trimmed to cap height and baseline, so the last line sits exactly on the
+   bottom edge of the picture beside it. */
 .ab-name.ft-lead-name {
   white-space: normal;
   line-height: 0.95;
+}
+
+.ft-lead .ab-name,
+.ft-lead .ab-role,
+.ft-row-text .ab-name,
+.ft-row-text .ab-role {
   text-box: trim-both cap alphabetic;
 }
 
 .ft-row {
   position: absolute;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
 .ft-row-text {
@@ -238,10 +246,6 @@
   min-width: 0;
 }
 
-.ft-row-text .ab-name {
-  text-box: trim-both cap alphabetic;
-}
-
 .ft-logo {
   position: absolute;
   display: block;
@@ -249,7 +253,7 @@
 }
 
 .ft-head {
-  gap: 36px;
+  gap: 28px;
 }
 
 .ft-tag {

@@ -1,30 +1,25 @@
 // Main speaker + co-speakers. Speaker 1 is the headliner: name column on the left, a large portrait
-// beside it. Everyone else stacks down the right: square photo, name and role beside it. Every name
-// is top-aligned with its picture. The event's own logo (first Logos slot) sits top-left and pushes
-// the speakers down. A single-line title band runs along the bottom (as on the 4-up cover), with an
-// optional black label above it ("KBW Panel"). Designed for this tool on the "GL - Live" system.
+// beside it. Everyone else stacks down the right: square photos filling the same height as the
+// headliner's, with name and role beside them. Every name and role sits on the bottom edge of its
+// picture. The event's own logo (first Logos slot) sits top-left, above the headliner's name.
+// A single-line title band runs along the bottom (as on the 4-up cover), with an optional black
+// label above it ("KBW Panel"). Designed for this tool on the "GL - Live" system.
 
 const FEATURED_LAYOUT = {
-  // Where the speakers sit: from the top margin, or below the event logo when there is one.
-  top: { y: 96, bottom: 1012 },
-  logo: { h: 88, maxW: 620, gap: 64 },
+  // Every picture runs from the top margin to the same bottom edge.
+  top: { y: 96, h: 926 },
+  logo: { h: 88, maxW: 620 },
   main: { textW: 620, gap: 48, portraitW: 972, nameSteps: [128, 112, 96, 88, 80], roleSteps: [40, 36, 32] },
   // The co-speaker stack fills the top zone exactly, whatever the count.
-  rows: { x: 1784, w: 1000, gap: 32, textGap: 48, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], minTextW: 560 },
-  band: { y: 1060, h: 464 },
+  rows: { x: 1784, w: 1000, gap: 24, textGap: 48, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], minTextW: 560 },
+  band: { y: 1078, h: 446 },
   maxSpeakers: 5,
 };
-
-function featuredTop(state) {
-  const L = FEATURED_LAYOUT;
-  const y = state.logos[0].src ? L.top.y + L.logo.h + L.logo.gap : L.top.y;
-  return { y, h: L.top.bottom - y };
-}
 
 function featuredRows(state) {
   const L = FEATURED_LAYOUT;
   const n = Math.max(1, state.count - 1);
-  const h = (featuredTop(state).h - L.rows.gap * (n - 1)) / n;
+  const h = (L.top.h - L.rows.gap * (n - 1)) / n;
   // Square photos, but the name always keeps at least minTextW beside them.
   return { n, h, size: Math.min(h, L.rows.w - L.rows.minTextW) };
 }
@@ -60,7 +55,7 @@ function featuredRole(speaker, steps, max) {
 function renderFeatured(state) {
   const L = FEATURED_LAYOUT;
   const nodes = [];
-  const top = featuredTop(state);
+  const top = L.top;
 
   const eventLogo = state.logos[0];
   if (eventLogo.src) {
@@ -151,7 +146,7 @@ registerTemplate({
   maxSpeakers: FEATURED_LAYOUT.maxSpeakers,
   portraitFrame: (state, index) => {
     if (index) return { w: featuredRows(state).size, h: featuredRows(state).size };
-    return { w: FEATURED_LAYOUT.main.portraitW, h: featuredTop(state).h };
+    return { w: FEATURED_LAYOUT.main.portraitW, h: FEATURED_LAYOUT.top.h };
   },
   render: renderFeatured,
 });
