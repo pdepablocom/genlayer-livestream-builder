@@ -1,20 +1,22 @@
-// Main speaker + co-speakers. The event owns the left: its logo (first Logos slot) top-left, and a
-// single-line title band along the bottom with an optional black label ("KBW Panel"). The speakers
-// sit together on the right, ending at the right margin: the headliner's large portrait with the name
-// beside it, then the co-speakers as square photos filling the same height, name beside each.
-// Every name and role sits on the bottom edge of its picture. Designed for this tool on "GL - Live".
+// Main speaker + co-speakers. Every speaker is a picture with the name beside it, on the picture's
+// bottom edge: the headliner's large portrait from the left margin, the event logo (first Logos slot)
+// at the top of the headliner's name column, then the co-speakers as square photos filling the same
+// height. A single-line title band runs along the bottom with an optional black label ("KBW Panel").
+// Designed for this tool on the "GL - Live" system.
 
 const FEATURED_LAYOUT = {
   // Every picture runs from the top margin to the same bottom edge.
   top: { y: 96, h: 926 },
-  logo: { h: 88, maxW: 400 },
-  // Laid out from the right margin leftwards: co-speakers, headliner's name, headliner's portrait.
-  main: { x: 560, portraitW: 738, gap: 48, textW: 560, nameSteps: [128, 112, 96, 88, 80], roleSteps: [40, 36, 32] },
+  logo: { h: 88, maxW: 620 },
+  // Portrait from the left margin, then the name column (event logo on top, name at the bottom).
+  main: { portraitW: 972, gap: 48, textW: 620, nameSteps: [128, 112, 96, 88, 80], roleSteps: [40, 36, 32] },
   // The co-speaker stack fills the top zone exactly, whatever the count.
-  rows: { x: 1954, w: 830, gap: 24, textGap: 48, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], minTextW: 480 },
+  rows: { x: 1784, w: 1000, gap: 24, textGap: 48, nameSteps: [64, 56, 48, 44], roleSteps: [36, 32, 28], minTextW: 560 },
   band: { y: 1078, h: 446 },
   maxSpeakers: 5,
 };
+
+const FEATURED_TEXT_X = ARTBOARD.margin + FEATURED_LAYOUT.main.portraitW + FEATURED_LAYOUT.main.gap;
 
 function featuredRows(state) {
   const L = FEATURED_LAYOUT;
@@ -62,7 +64,7 @@ function renderFeatured(state) {
     const logo = el('img', 'ft-logo', {
       src: eventLogo.black ? eventLogo.srcBlack : eventLogo.src,
       alt: '',
-      style: { left: px(ARTBOARD.margin), top: px(L.top.y), height: px(L.logo.h), maxWidth: px(L.logo.maxW) },
+      style: { left: px(FEATURED_TEXT_X), top: px(L.top.y), height: px(L.logo.h), maxWidth: px(L.logo.maxW) },
     });
     logo.dataset.intro = 'art';
     nodes.push(logo);
@@ -71,7 +73,7 @@ function renderFeatured(state) {
   // Headliner.
   const lead = state.speakers[0];
   const leadText = el('div', 'ft-lead', {
-    style: { left: px(L.main.x + L.main.portraitW + L.main.gap), top: px(top.y), width: px(L.main.textW), height: px(top.h) },
+    style: { left: px(FEATURED_TEXT_X), top: px(top.y), width: px(L.main.textW), height: px(top.h) },
   });
   leadText.dataset.intro = 'caption';
   const leadName = el('p', 'ab-name ft-lead-name' + (lead.name ? '' : ' ab-placeholder'), { text: lead.name || 'Main speaker' });
@@ -80,11 +82,9 @@ function renderFeatured(state) {
   const leadPortrait = featuredPortrait(lead, 0, L.main.portraitW, top.h);
   Object.assign(leadPortrait.style, {
     position: 'absolute',
-    left: px(L.main.x),
+    left: px(ARTBOARD.margin),
     top: px(top.y),
   });
-  leadText.dataset.speakerGroup = '';
-  leadPortrait.dataset.speakerGroup = '';
   nodes.push(leadText, leadPortrait);
 
   // Co-speakers.
@@ -101,7 +101,6 @@ function renderFeatured(state) {
     const name = el('p', 'ab-name' + (speaker.name ? '' : ' ab-placeholder'), { text: speaker.name || 'Name' });
     Object.assign(name.dataset, { fit: 'width', steps: L.rows.nameSteps.join(','), max: textW });
     text.append(name, featuredRole(speaker, L.rows.roleSteps, textW));
-    row.dataset.speakerGroup = '';
     row.append(featuredPortrait(speaker, i, R.size, R.size), text);
     nodes.push(row);
   }
@@ -137,23 +136,13 @@ function renderFeatured(state) {
   return nodes;
 }
 
-// Names are only measurable once rendered: slide the whole speaker group right until the longest
-// co-speaker line ends exactly on the right margin.
-function fitFeatured(artboard) {
-  const rows = [...artboard.querySelectorAll('.ft-row')];
-  const right = Math.max(...rows.map((row) => row.offsetLeft + row.offsetWidth));
-  const shift = ARTBOARD.w - ARTBOARD.margin - right;
-  if (shift <= 0) return;
-  for (const node of artboard.querySelectorAll('[data-speaker-group]')) node.style.left = px(node.offsetLeft + shift);
-}
-
 registerTemplate({
   id: 'featured',
   name: 'Main speaker',
   theme: 'live',
   sections: ['tag', 'subtitle', 'speakers', 'logos', 'stream'],
   maxLogos: 1,
-  logoHint: 'The event logo, top left. SVG or transparent PNG works best.',
+  logoHint: 'The event logo, above the main speaker\'s name. SVG or transparent PNG works best.',
   minSpeakers: 2,
   speakerLegend: (i) => (i ? `Co-speaker ${i}` : 'Main speaker'),
   maxSpeakers: FEATURED_LAYOUT.maxSpeakers,
@@ -162,5 +151,4 @@ registerTemplate({
     return { w: FEATURED_LAYOUT.main.portraitW, h: FEATURED_LAYOUT.top.h };
   },
   render: renderFeatured,
-  fit: fitFeatured,
 });
