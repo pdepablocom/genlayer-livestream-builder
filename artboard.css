@@ -240,7 +240,7 @@
 
 .ft-row-text {
   display: flex;
-  flex: 1;
+  flex: none;
   flex-direction: column;
   gap: 24px;
   min-width: 0;
