@@ -138,6 +138,10 @@ h2 {
   grid-template-columns: 1fr 96px;
 }
 
+.field-row.is-when {
+  grid-template-columns: 1fr 128px;
+}
+
 .field-row.is-show:has([data-section="episode"][hidden]) {
   grid-template-columns: 1fr;
 }
@@ -175,6 +179,7 @@ input[type="text"],
 input[type="datetime-local"],
 select,
 textarea {
+  min-width: 0;
   display: block;
   width: 100%;
   padding: 9px 12px;

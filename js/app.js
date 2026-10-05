@@ -33,6 +33,7 @@ function fitPreview() {
 
 function buildPanel() {
   form.show.append(...window.GL_SHOWS.map((show) => new Option(show.name, show.id)));
+  form.tz.append(...TIME_ZONES.map((zone) => new Option(zone.id, zone.id)));
   const speakerTemplate = document.getElementById('speaker-template');
   for (let i = 0; i < MAX_SPEAKERS; i++) {
     const node = speakerTemplate.content.firstElementChild.cloneNode(true);
@@ -70,6 +71,7 @@ function fillPanel() {
   form.title.value = state.title;
   form.subtitle.value = state.subtitle;
   form.when.value = state.when;
+  form.tz.value = state.tz;
   form.handle0.value = state.handles[0];
   form.handle1.value = state.handles[1];
   speakersRoot.querySelectorAll('.speaker').forEach((node, i) => {
@@ -108,7 +110,7 @@ function syncPanel() {
     if (photo) node.querySelector('input[type=range]').value = photo.zoom;
   });
 
-  document.getElementById('when-local').textContent = localTimeHint(state.when);
+  document.getElementById('when-local').textContent = localTimeHint(state.when, state.tz);
 
   document.getElementById('library-count').textContent = myPeople.length
     ? `${myPeople.length} saved in this browser. Export to share them with a colleague.`
@@ -127,27 +129,72 @@ function syncPanel() {
   });
 }
 
-// "2026-07-13T17:00" (UTC) → "July 13, Monday 5PM UTC", the one format every cover uses.
-function formatWhen(when) {
+// The picked time is the event's local time in the chosen zone; the pill prints it as typed.
+// `label` is fixed for zones without daylight saving; the others take it from the date (CET or CEST).
+const TIME_ZONES = [
+  { id: 'UTC', iana: 'UTC', label: 'UTC' },
+  { id: 'KST', iana: 'Asia/Seoul', label: 'KST', name: 'Seoul' },
+  { id: 'JST', iana: 'Asia/Tokyo', label: 'JST', name: 'Tokyo' },
+  { id: 'SGT', iana: 'Asia/Singapore', label: 'SGT', name: 'Singapore' },
+  { id: 'HKT', iana: 'Asia/Hong_Kong', label: 'HKT', name: 'Hong Kong' },
+  { id: 'IST', iana: 'Asia/Kolkata', label: 'IST', name: 'India' },
+  { id: 'GST', iana: 'Asia/Dubai', label: 'GST', name: 'Dubai' },
+  { id: 'CET', iana: 'Europe/Madrid', locale: 'en-GB', name: 'Central Europe' },
+  { id: 'UK', iana: 'Europe/London', locale: 'en-GB', name: 'London' },
+  { id: 'ET', iana: 'America/New_York', locale: 'en-US', name: 'New York' },
+  { id: 'PT', iana: 'America/Los_Angeles', locale: 'en-US', name: 'San Francisco' },
+];
+
+function zoneOf(id) {
+  return TIME_ZONES.find((z) => z.id === id) || TIME_ZONES[0];
+}
+
+// "2026-07-13T17:00" in KST → "July 13, Monday 5PM KST", the one format every cover uses.
+function formatWhen(when, tz) {
   const date = parseWhen(when);
   if (!date) return '';
   const part = (options) => date.toLocaleString('en-US', { timeZone: 'UTC', ...options });
   const h = date.getUTCHours();
   const m = date.getUTCMinutes();
   const time = `${h % 12 || 12}${m ? ':' + String(m).padStart(2, '0') : ''}${h < 12 ? 'AM' : 'PM'}`;
-  return `${part({ month: 'long' })} ${date.getUTCDate()}, ${part({ weekday: 'long' })} ${time} UTC`;
+  return `${part({ month: 'long' })} ${date.getUTCDate()}, ${part({ weekday: 'long' })} ${time} ${zoneLabel(when, tz)}`;
 }
 
+// The picker's wall-clock time, kept as if it were UTC, so the printed date never shifts.
 function parseWhen(when) {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(when || '');
   return m ? new Date(Date.UTC(m[1], m[2] - 1, m[3], m[4], m[5])) : null;
 }
 
-// The picker is in UTC, so say what that is where the person filling it in lives.
-function localTimeHint(when) {
-  const date = parseWhen(when);
-  if (!date || date.getTimezoneOffset() === 0) return '';
-  const local = date.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+// The real moment: the wall-clock time in the chosen zone.
+function instantOf(when, tz) {
+  const wall = parseWhen(when);
+  if (!wall) return null;
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', { timeZone: zoneOf(tz).iana, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' })
+      .formatToParts(wall)
+      .map((p) => [p.type, Number(p.value)])
+  );
+  const shifted = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute);
+  return new Date(wall.getTime() - (shifted - wall.getTime()));
+}
+
+function zoneLabel(when, tz) {
+  const zone = zoneOf(tz);
+  if (zone.label) return zone.label;
+  const instant = instantOf(when, tz);
+  const name = new Intl.DateTimeFormat(zone.locale, { timeZone: zone.iana, timeZoneName: 'short' }).formatToParts(instant).find((p) => p.type === 'timeZoneName').value;
+  return name === 'GMT+0' ? 'GMT' : name;
+}
+
+// Say what the picked time is where the person filling it in lives.
+function localTimeHint(when, tz) {
+  const instant = instantOf(when, tz);
+  if (!instant) return '';
+  const here = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const sameClock = instant.toLocaleString('en-US', { timeZone: here }) === instant.toLocaleString('en-US', { timeZone: zoneOf(tz).iana });
+  if (sameClock) return '';
+  const local = instant.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
   return `Your time: ${local}`;
 }
 
@@ -170,7 +217,7 @@ function bindPanel() {
     const t = e.target;
     if (t.name === 'show') switchShow(t.value);
     else if (['title', 'subtitle', 'episode', 'agenda', 'tag'].includes(t.name)) update((s) => (s[t.name] = t.value));
-    else if (t.name === 'when') update((s) => ((s.when = t.value), (s.date = formatWhen(t.value))));
+    else if (t.name === 'when' || t.name === 'tz') update((s) => ((s[t.name] = t.value), (s.date = formatWhen(s.when, s.tz))));
     else if (t.name === 'handle0' || t.name === 'handle1') update((s) => (s.handles[Number(t.name.slice(-1))] = t.value));
     else if (t.dataset.key) update((s) => (s.speakers[t.closest('.speaker').dataset.index][t.dataset.key] = t.value));
     else if (t.type === 'range') update((s) => (s.speakers[t.closest('.speaker').dataset.index].photo.zoom = Number(t.value)));

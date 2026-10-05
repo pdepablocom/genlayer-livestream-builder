@@ -50,11 +50,14 @@
           <span>Agenda</span>
           <textarea name="agenda" rows="5" spellcheck="true" placeholder="One topic per line, up to six"></textarea>
         </label>
-        <label class="field">
-          <span>Date and time (UTC)</span>
-          <input name="when" type="datetime-local" step="900">
+        <div class="field">
+          <span>Date and time</span>
+          <div class="field-row is-when">
+            <input name="when" type="datetime-local" step="300" aria-label="Date and time">
+            <select name="tz" aria-label="Time zone"></select>
+          </div>
           <small id="when-local"></small>
-        </label>
+        </div>
       </section>
 
       <section data-section="speakers">
