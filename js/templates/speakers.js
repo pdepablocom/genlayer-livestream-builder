@@ -113,10 +113,17 @@ function renderSpeakers(state) {
   let column;
   if (t.type === 'band') {
     column = el('div', 'ab-column', { style: { left: px(t.x), top: px(t.y), width: px(t.w), height: px(t.h) } });
-    fillTitle(title, state.title.replace(/\s*\n\s*/g, ' '), state);
-    title.classList.add('is-single-line');
-    title.dataset.fit = 'width';
+    // One line, unless the title has a line break: then two, a step smaller so the band still fits.
+    const lines = state.title.split('\n').map((s) => s.trim()).filter(Boolean);
     title.dataset.max = t.w;
+    if (lines.length > 1) {
+      fillTitle(title, lines.slice(0, 2).join('\n'), state);
+      Object.assign(title.dataset, { fit: 'lines', maxLines: 2, steps: (state.subtitle.trim() ? [112, 96, 80] : [144, 128, 112, 96]).join(',') });
+    } else {
+      fillTitle(title, lines.join(' '), state);
+      title.classList.add('is-single-line');
+      title.dataset.fit = 'width';
+    }
     subtitle.textContent = state.subtitle.split('\n').map((s) => s.trim()).filter(Boolean).join(', ');
     subtitle.style.maxWidth = px(t.subtitleW);
   } else {
@@ -129,7 +136,7 @@ function renderSpeakers(state) {
     title.dataset.maxLines = t.maxLines;
     subtitle.textContent = state.subtitle;
   }
-  title.dataset.steps = TITLE_STEPS.join(',');
+  if (!title.dataset.steps) title.dataset.steps = TITLE_STEPS.join(',');
 
   // Where the stream happens: beside the date in the band, otherwise in the bottom-right corner.
   const handles = renderHandles(state, true);

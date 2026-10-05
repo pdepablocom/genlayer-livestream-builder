@@ -20,6 +20,9 @@ function defaultState() {
     // Picked in UTC as "YYYY-MM-DDTHH:MM"; `date` is the pill text written from it.
     when: '2026-07-13T17:00',
     tz: 'UTC',
+    // Several days (a conference): the pill shows "5 - 9 Oct" from the picker's date to `end`.
+    range: false,
+    end: '',
     date: 'July 13, Monday 5PM UTC',
     agenda: '',
     speakers: Array.from({ length: MAX_SPEAKERS }, emptySpeaker),

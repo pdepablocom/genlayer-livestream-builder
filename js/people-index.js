@@ -89,6 +89,15 @@ window.GL_PEOPLE = [
     "tags": [
       "guest"
     ]
+  },
+  {
+    "id": "xavi-martinez",
+    "name": "Xavi Martínez",
+    "role": "CMO",
+    "company": "GenLayer Foundation",
+    "tags": [
+      "team"
+    ]
   }
 ];
 window.GL_PEOPLE_PHOTOS = {};

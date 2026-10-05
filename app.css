@@ -177,6 +177,7 @@ select {
 
 input[type="text"],
 input[type="datetime-local"],
+input[type="date"],
 select,
 textarea {
   min-width: 0;
@@ -393,6 +394,14 @@ input[type="range"] {
 
 .check input {
   accent-color: var(--blue);
+}
+
+.check.is-range {
+  margin-top: 10px;
+}
+
+.field.is-end {
+  margin: 10px 0 0;
 }
 
 /* People */

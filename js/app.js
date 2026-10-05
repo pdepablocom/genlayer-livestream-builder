@@ -72,6 +72,8 @@ function fillPanel() {
   form.subtitle.value = state.subtitle;
   form.when.value = state.when;
   form.tz.value = state.tz;
+  form.range.checked = state.range;
+  form.end.value = state.end;
   form.handle0.value = state.handles[0];
   form.handle1.value = state.handles[1];
   speakersRoot.querySelectorAll('.speaker').forEach((node, i) => {
@@ -110,7 +112,8 @@ function syncPanel() {
     if (photo) node.querySelector('input[type=range]').value = photo.zoom;
   });
 
-  document.getElementById('when-local').textContent = localTimeHint(state.when, state.tz);
+  document.getElementById('when-local').textContent = state.range ? '' : localTimeHint(state.when, state.tz);
+  document.querySelector('[data-range]').hidden = !state.range;
 
   document.getElementById('library-count').textContent = myPeople.length
     ? `${myPeople.length} saved in this browser. Export to share them with a colleague.`
@@ -127,6 +130,19 @@ function syncPanel() {
     node.querySelector('.logo-name').textContent = logo.name || '';
     node.querySelector('input[type=checkbox]').checked = Boolean(logo.black);
   });
+}
+
+// What the blue pill says: one date and time, or a run of days ("5 - 9 Oct", "30 Sep - 2 Oct").
+function pillText(s) {
+  if (!s.range) return formatWhen(s.when, s.tz);
+  const start = parseWhen(s.when);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s.end || '');
+  if (!start) return '';
+  const day = (d) => d.getUTCDate();
+  const month = (d) => d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+  if (!m) return `${day(start)} ${month(start)}`;
+  const end = new Date(Date.UTC(m[1], m[2] - 1, m[3]));
+  return month(start) === month(end) ? `${day(start)} - ${day(end)} ${month(end)}` : `${day(start)} ${month(start)} - ${day(end)} ${month(end)}`;
 }
 
 // The picked time is the event's local time in the chosen zone; the pill prints it as typed.
@@ -217,7 +233,7 @@ function bindPanel() {
     const t = e.target;
     if (t.name === 'show') switchShow(t.value);
     else if (['title', 'subtitle', 'episode', 'agenda', 'tag'].includes(t.name)) update((s) => (s[t.name] = t.value));
-    else if (t.name === 'when' || t.name === 'tz') update((s) => ((s[t.name] = t.value), (s.date = formatWhen(s.when, s.tz))));
+    else if (['when', 'tz', 'end', 'range'].includes(t.name)) update((s) => ((s[t.name] = t.name === 'range' ? t.checked : t.value), (s.date = pillText(s))));
     else if (t.name === 'handle0' || t.name === 'handle1') update((s) => (s.handles[Number(t.name.slice(-1))] = t.value));
     else if (t.dataset.key) update((s) => (s.speakers[t.closest('.speaker').dataset.index][t.dataset.key] = t.value));
     else if (t.type === 'range') update((s) => (s.speakers[t.closest('.speaker').dataset.index].photo.zoom = Number(t.value)));
