@@ -91,8 +91,8 @@ window.GL_PEOPLE = [
     ]
   },
   {
-    "id": "xavi-martinez",
-    "name": "Xavi Martínez",
+    "id": "xavi-cabezas",
+    "name": "Xavi Cabezas",
     "role": "CMO",
     "company": "GenLayer Foundation",
     "tags": [
